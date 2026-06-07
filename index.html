@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#c0392b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ayora Emergencia">
+<title>ISFV Ayora 1 — Emergencias</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --red:#c0392b;--red-dark:#922b21;--red-light:#fadbd8;
+  --green:#1e8449;--green-light:#d5f5e3;
+  --blue:#1a5276;--blue-light:#d6eaf8;
+  --orange:#e67e22;--orange-light:#fef0e6;
+  --amber-light:#fef9e7;--amber:#7d6608;
+  --bg:#f4f6f8;--surface:#ffffff;--surface2:#f0f2f5;
+  --text:#1a1a2e;--text2:#5a6272;--border:rgba(0,0,0,0.10);
+  --radius:12px;--radius-sm:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);font-family:-apple-system,'Helvetica Neue',Arial,sans-serif}
+#app{max-width:430px;margin:0 auto;min-height:100vh;background:var(--surface)}
+.screen{display:none;flex-direction:column;min-height:100vh}
+.screen.active{display:flex}
+.hdr{padding:48px 18px 14px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.hdr-red{background:var(--red)}.hdr-dark{background:var(--red-dark)}
+.hdr-green{background:var(--green)}.hdr-blue{background:var(--blue)}.hdr-orange{background:var(--orange)}
+.hdr h1{font-size:16px;font-weight:600;color:#fff;line-height:1.2}
+.hdr small{font-size:11px;color:rgba(255,255,255,0.78);display:block;margin-top:2px}
+.back-btn{background:transparent;border:none;cursor:pointer;color:rgba(255,255,255,0.85);padding:0;display:flex;align-items:center;font-size:22px}
+.content{flex:1;padding:16px;overflow-y:auto}
+.btn-big{width:100%;padding:17px;border-radius:var(--radius);font-size:16px;font-weight:700;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;transition:transform 0.1s,opacity 0.1s}
+.btn-big:active{transform:scale(0.97);opacity:0.92}
+.btn-red{background:var(--red);color:#fff;box-shadow:0 4px 16px rgba(192,57,43,0.35)}
+.btn-green{background:var(--green);color:#fff}
+.btn-outline{background:var(--surface);color:var(--text);border:1px solid var(--border);padding:12px 14px;border-radius:var(--radius-sm);font-size:13px;cursor:pointer;width:100%;margin-bottom:8px;display:flex;align-items:center;gap:9px;transition:background 0.15s}
+.btn-outline:active{background:var(--surface2)}
+.btn-outline i{font-size:18px;color:var(--text2)}
+.card{background:var(--surface2);border-radius:var(--radius-sm);padding:11px 13px;margin-bottom:10px}
+.card label{font-size:11px;color:var(--text2);display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.4px}
+.card p{font-size:14px;font-weight:600;color:var(--text)}
+.route-box{border-radius:var(--radius-sm);border:1.5px solid var(--green);background:var(--green-light);padding:12px;margin-bottom:10px}
+.route-box h3{font-size:13px;font-weight:600;color:var(--green);margin-bottom:5px;display:flex;align-items:center;gap:5px}
+.route-box p{font-size:13px;color:#1a5e35;line-height:1.6}
+.alert-box{background:var(--red-light);border:1px solid var(--red);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:10px;font-size:12px;color:var(--red-dark);display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+.alert-box i{font-size:17px;flex-shrink:0;margin-top:1px}
+.contacts-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:0 14px;margin-bottom:10px}
+.crow{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.crow:last-child{border-bottom:none}
+.cinfo h4{font-size:13px;font-weight:600;color:var(--text)}
+.cinfo p{font-size:11px;color:var(--text2);margin-top:1px}
+.call-btn{border:none;border-radius:var(--radius-sm);padding:8px 13px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
+.cbtn-green{background:var(--green);color:#fff}
+.cbtn-red{background:var(--red);color:#fff}
+.gps-row{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text2);margin-bottom:10px}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-green{background:#27ae60}.dot-orange{background:var(--orange);animation:blink 1s infinite}.dot-red{background:var(--red)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.pulse{animation:blink 1.3s infinite}
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:14px}
+.tab{flex:1;padding:10px 4px;font-size:12px;border:none;background:transparent;cursor:pointer;color:var(--text2);border-bottom:2.5px solid transparent;font-weight:500}
+.tab.active{color:var(--red);border-bottom-color:var(--red)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+select{width:100%;padding:10px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;margin-bottom:10px;-webkit-appearance:none}
+canvas#minimap{width:100%;height:200px;border-radius:var(--radius-sm);border:1px solid var(--border);display:block;margin-bottom:10px;background:#ddeeff}
+.section-lbl{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px}
+.step-li{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.step-li:last-child{border-bottom:none}
+.snum{width:26px;height:26px;border-radius:50%;background:var(--red);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.stext{font-size:13px;color:var(--text);line-height:1.55}
+.stext strong{font-weight:600}
+.warn-box{padding:10px 12px;background:var(--amber-light);border:1px solid #f4d03f;border-radius:var(--radius-sm);font-size:12px;color:var(--amber);line-height:1.55;margin-top:10px}
+.map-btn{width:100%;padding:11px;border-radius:var(--radius-sm);border:1px solid var(--blue);background:transparent;color:var(--blue);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:10px}
+.share-btn{border:none;border-radius:var(--radius-sm);padding:11px 8px;font-size:13px;font-weight:600;cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center;gap:7px;transition:opacity 0.15s}
+.share-btn:active{opacity:0.8}
+
+/* CRONÓMETRO */
+.timer-box{background:var(--red-dark);border-radius:var(--radius);padding:14px;margin-bottom:12px;text-align:center}
+.timer-label{font-size:11px;color:rgba(255,255,255,0.75);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
+.timer-value{font-size:42px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:2px;font-family:monospace}
+.timer-date{font-size:11px;color:rgba(255,255,255,0.65);margin-top:4px}
+
+/* TIPO EMERGENCIA */
+.tipo-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.tipo-btn{border:1.5px solid var(--border);background:var(--surface);border-radius:var(--radius-sm);padding:14px 8px;cursor:pointer;text-align:center;transition:all 0.15s}
+.tipo-btn:active{transform:scale(0.97)}
+.tipo-btn.selected{border-color:var(--red);background:var(--red-light)}
+.tipo-icon{font-size:28px;display:block;margin-bottom:5px}
+.tipo-name{font-size:12px;font-weight:600;color:var(--text)}
+
+/* ALERTA OVERLAY */
+#alerta-overlay{display:none;position:fixed;inset:0;background:rgba(146,43,33,0.97);z-index:9999;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;overflow-y:auto}
+#alerta-overlay.active{display:flex}
+.alerta-icon{font-size:70px;animation:alertPulse 0.6s infinite alternate}
+@keyframes alertPulse{0%{transform:scale(1)}100%{transform:scale(1.15)}}
+.alerta-title{font-size:30px;font-weight:800;color:#fff;margin:12px 0 6px;text-transform:uppercase;letter-spacing:1px}
+.alerta-tipo{font-size:17px;color:rgba(255,255,255,0.95);margin-bottom:6px;font-weight:600}
+.alerta-loc{font-size:13px;color:rgba(255,255,255,0.75);margin-bottom:20px;line-height:1.5}
+.alerta-section{font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;width:100%;text-align:left}
+.alerta-call-btn{width:100%;padding:15px;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:10px}
+.alerta-call-marina{background:#27ae60;color:#fff}
+.alerta-call-jorge{background:#2980b9;color:#fff}
+.alerta-call-enf{background:#8e44ad;color:#fff}
+.alerta-divider{width:100%;height:1px;background:rgba(255,255,255,0.2);margin:12px 0}
+.alerta-close{background:#fff;color:var(--red-dark);border:none;border-radius:var(--radius);padding:13px 32px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px;width:100%}
+.alerta-dismiss{background:transparent;border:1px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.7);border-radius:var(--radius);padding:10px 24px;font-size:12px;cursor:pointer;width:100%}
+
+/* HISTORIAL */
+.hist-item{background:var(--surface2);border-radius:var(--radius-sm);padding:11px 13px;margin-bottom:8px;border-left:3px solid var(--red)}
+.hist-item.incendio{border-left-color:#e74c3c}
+.hist-item.accidente{border-left-color:#e67e22}
+.hist-item.medica{border-left-color:#c0392b}
+.hist-item.tormenta{border-left-color:#2980b9}
+.hist-item.fuga{border-left-color:#8e44ad}
+.hist-item.otro{border-left-color:#7f8c8d}
+.hist-item h4{font-size:13px;font-weight:600;color:var(--text)}
+.hist-item p{font-size:11px;color:var(--text2);margin-top:3px;line-height:1.4}
+.hist-empty{text-align:center;padding:32px 16px;color:var(--text2);font-size:13px}
+
+/* CONFIRM 112 */
+#confirm112{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:8888;align-items:flex-end;justify-content:center}
+#confirm112.active{display:flex}
+.confirm-sheet{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;padding:24px 20px 36px;width:100%;max-width:430px}
+.confirm-sheet h3{font-size:17px;font-weight:700;color:var(--text);margin-bottom:8px;text-align:center}
+.confirm-sheet p{font-size:13px;color:var(--text2);text-align:center;line-height:1.6;margin-bottom:20px}
+.btn-confirm-yes{width:100%;padding:15px;background:var(--red);color:#fff;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px}
+.btn-confirm-no{width:100%;padding:13px;background:var(--surface2);color:var(--text);border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:500;cursor:pointer}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ALERTA OVERLAY -->
+<div id="alerta-overlay">
+  <div class="alerta-icon">🚨</div>
+  <div class="alerta-title">¡EMERGENCIA!</div>
+  <div class="alerta-tipo" id="ao-tipo">—</div>
+  <div class="alerta-loc" id="ao-loc">—</div>
+
+  <div style="width:100%">
+    <div class="alerta-section">📞 Llama ahora con un toque</div>
+    <button class="alerta-call-btn alerta-call-marina" onclick="callAndClose('685617906')">
+      📞 Marina — Jefa Emergencias<br><small style="font-weight:400;font-size:12px">685 61 79 06</small>
+    </button>
+    <button class="alerta-call-btn alerta-call-jorge" onclick="callAndClose('673362817')">
+      📞 Jorge — Jefe Emergencias<br><small style="font-weight:400;font-size:12px">673 36 28 17</small>
+    </button>
+    <div id="ao-enf-wrap" style="display:none">
+      <div class="alerta-section" style="margin-top:8px">🏥 Avisar a Enfermería — ¿cómo?</div>
+      <button class="alerta-call-btn" style="background:#1e8449;color:#fff;margin-bottom:8px" onclick="avisarEnfermeria('enfermeria')">
+        🚶 El accidentado va a Enfermería
+      </button>
+      <button class="alerta-call-btn" style="background:#c0392b;color:#fff" onclick="avisarEnfermeria('obra')">
+        🏃 El enfermero/a debe desplazarse a obra
+      </button>
+    </div>
+  </div>
+
+  <div class="alerta-divider"></div>
+  <button class="alerta-close" onclick="cerrarAlerta()">Ver ruta de escape →</button>
+  <button class="alerta-dismiss" onclick="cerrarAlerta()">Cerrar alerta</button>
+</div>
+
+<!-- CONFIRM 112 -->
+<div id="confirm112">
+  <div class="confirm-sheet">
+    <h3>⚠️ ¿Llamar al 112?</h3>
+    <p>Llama al 112 <strong>solo si es estrictamente necesario</strong>.<br>Mantén la línea libre para emergencias reales.<br><br>¿Confirmas que necesitas ayuda externa urgente?</p>
+    <button class="btn-confirm-yes" onclick="confirmar112()">Sí, llamar al 112 ahora</button>
+    <button class="btn-confirm-no" onclick="cancelar112()">Cancelar</button>
+  </div>
+</div>
+
+<!-- INICIO -->
+<div id="s-home" class="screen active">
+  <div class="hdr hdr-red">
+    <img src="icon-192.png" style="width:40px;height:40px;border-radius:8px;flex-shrink:0" alt="logo">
+    <div style="flex:1"><h1>ISFV Ayora 1</h1><small>Plan de Emergencia y Evacuación</small></div>
+  </div>
+  <div class="content">
+    <div class="gps-row"><div class="dot dot-orange" id="dot0"></div><span id="gps-txt">Buscando GPS...</span></div>
+    <div id="install-box" style="display:none;background:var(--blue);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:10px;display:none;align-items:center;justify-content:space-between;gap:10px">
+      <span style="font-size:12px;color:#fff;flex:1">📲 Instala la app en tu móvil para usarla sin conexión</span>
+      <button id="install-btn" onclick="instalarApp()" style="background:#fff;color:var(--blue);border:none;border-radius:var(--radius-sm);padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">Instalar</button>
+    </div>
+    <div class="card"><label>Ubicación detectada</label><p id="home-loc">—</p></div>
+    <div class="card" id="dist-card" style="display:none"><label>Distancia a salidas</label><p id="home-dist">—</p></div>
+    <button class="btn-big btn-red" onclick="go('s-tipo')"><i class="ti ti-alert-triangle"></i>ACTIVAR EMERGENCIA</button>
+    <button class="btn-outline" onclick="go('s-manual')"><i class="ti ti-map-pin"></i>Indicar mi ubicación manualmente</button>
+    <button class="btn-outline" onclick="go('s-contacts')"><i class="ti ti-phone"></i>Teléfonos de emergencia</button>
+    <button class="btn-outline" onclick="go('s-protocol')"><i class="ti ti-list"></i>Protocolo de actuación</button>
+    <button class="btn-outline" onclick="go('s-map')"><i class="ti ti-map"></i>Ver mapa de la planta</button>
+    <button class="btn-outline" onclick="go('s-historial')"><i class="ti ti-history"></i>Historial de emergencias</button>
+    <button class="btn-outline" onclick="go('s-qr')"><i class="ti ti-qrcode"></i>QR para compartir la app</button>
+    <div class="warn-box"><strong>Regla de oro:</strong> Solo llama a quien sea estrictamente necesario. Mantén las líneas libres para el 112. Sigue las instrucciones del Jefe de Emergencias.</div>
+    <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:14px">
+      <p class="section-lbl" style="margin-bottom:10px">Compartir esta app</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button class="share-btn" onclick="shareApp('whatsapp')" style="background:#25D366"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>WhatsApp</button>
+        <button class="share-btn" onclick="shareApp('telegram')" style="background:#0088cc"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>Telegram</button>
+        <button class="share-btn" onclick="shareApp('teams')" style="background:#6264A7"><i class="ti ti-brand-teams" style="font-size:18px"></i>Teams</button>
+        <button class="share-btn" onclick="shareApp('email')" style="background:#EA4335"><i class="ti ti-mail" style="font-size:18px"></i>Email</button>
+      </div>
+      <button class="share-btn" onclick="shareApp('system')" style="background:var(--blue);width:100%;margin-top:8px"><i class="ti ti-share" style="font-size:18px"></i>Compartir por otras apps...</button>
+    </div>
+  </div>
+</div>
+
+<!-- TIPO DE EMERGENCIA -->
+<div id="s-tipo" class="screen">
+  <div class="hdr hdr-red">
+    <button class="back-btn" onclick="go('s-home')"><i class="ti ti-arrow-left"></i></button>
+    <div><h1>Tipo de emergencia</h1><small>Selecciona qué está ocurriendo</small></div>
+  </div>
+  <div class="content">
+    <p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.5">Selecciona el tipo para activar el protocolo adecuado y avisar a quien corresponde:</p>
+    <div class="tipo-grid">
+      <button class="tipo-btn" onclick="selTipo('incendio')" id="t-incendio"><span class="tipo-icon">🔥</span><span class="tipo-name">Incendio</span></button>
+
+      <button class="tipo-btn" onclick="selTipo('medica')" id="t-medica"><span class="tipo-icon">🏥</span><span class="tipo-name">Emergencia médica</span></button>
+      <button class="tipo-btn" onclick="selTipo('tormenta')" id="t-tormenta"><span class="tipo-icon">⛈️</span><span class="tipo-name">Tormenta / Rayo</span></button>
+      <button class="tipo-btn" onclick="selTipo('fuga')" id="t-fuga"><span class="tipo-icon">☢️</span><span class="tipo-name">Fuga / Derrame</span></button>
+      <button class="tipo-btn" onclick="selTipo('otro')" id="t-otro"><span class="tipo-icon">🆘</span><span class="tipo-name">Otra emergencia</span></button>
+    </div>
+    <div id="tipo-aviso" style="display:none;margin-bottom:12px;padding:10px 12px;background:var(--red-light);border:1px solid var(--red);border-radius:var(--radius-sm);font-size:12px;color:var(--red-dark);line-height:1.5"></div>
+    <button class="btn-big btn-red" id="btn-activar-tipo" onclick="activarConTipo()" style="opacity:0.4;pointer-events:none"><i class="ti ti-alert-triangle"></i>ACTIVAR EMERGENCIA</button>
+  </div>
+</div>
+
+<!-- UBICACIÓN MANUAL -->
+<div id="s-manual" class="screen">
+  <div class="hdr hdr-blue">
+    <button class="back-btn" onclick="go('s-home')"><i class="ti ti-arrow-left"></i></button>
+    <div><h1>¿Dónde estás?</h1><small>Indica tu ubicación en la planta</small></div>
+  </div>
+  <div class="content">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('t-parcela')">Parcela</button>
+      <button class="tab" onclick="switchTab('t-zona')">Zona</button>
+      <button class="tab" onclick="switchTab('t-ref')">Referencia</button>
+    </div>
+    <div id="t-parcela" class="tab-pane active">
+      <p class="section-lbl">Selecciona tu parcela</p>
+      <select id="sel-parcela" onchange="onParcelaChange()"><option value="">— Elige una parcela (P001–P029) —</option></select>
+      <div id="r-parcela" class="route-box" style="display:none"><h3><i class="ti ti-route"></i>Ruta recomendada</h3><p id="rt-parcela"></p></div>
+    </div>
+    <div id="t-zona" class="tab-pane">
+      <p class="section-lbl">Selecciona tu zona</p>
+      <select id="sel-zona" onchange="onZonaChange()">
+        <option value="">— Elige una zona —</option>
+        <option value="norte">Zona Norte (P001–P008)</option>
+        <option value="centro-norte">Zona Centro-Norte (P009–P014)</option>
+        <option value="centro-sur">Zona Centro-Sur (P015–P023)</option>
+        <option value="sur">Zona Sur (P024–P029)</option>
+      </select>
+      <div id="r-zona" class="route-box" style="display:none"><h3><i class="ti ti-route"></i>Ruta recomendada</h3><p id="rt-zona"></p></div>
+    </div>
+    <div id="t-ref" class="tab-pane">
+      <p class="section-lbl">Selecciona un punto de referencia</p>
+      <select id="sel-ref" onchange="onRefChange()">
+        <option value="">— Elige un punto —</option>
+        <option value="enfermeria">🏥 Enfermería / P028</option>
+        <option value="garita">🟢 Cerca de la Garita</option>
+        <option value="n330">🟢 Cerca de Salida N-330</option>
+        <option value="centro">Centro de la planta</option>
+        <option value="camino-norte">Camino principal norte</option>
+        <option value="camino-sur">Camino principal sur</option>
+      </select>
+      <div id="r-ref" class="route-box" style="display:none"><h3><i class="ti ti-route"></i>Ruta recomendada</h3><p id="rt-ref"></p></div>
+    </div>
+    <button class="btn-big btn-red" style="margin-top:12px" onclick="go('s-tipo')"><i class="ti ti-alert-triangle"></i>Activar emergencia desde aquí</button>
+  </div>
+</div>
+
+<!-- EMERGENCIA ACTIVA -->
+<div id="s-emergency" class="screen">
+  <div class="hdr hdr-dark">
+    <button class="back-btn" onclick="go('s-home')"><i class="ti ti-arrow-left"></i></button>
+    <div style="flex:1"><h1 class="pulse">🚨 EMERGENCIA ACTIVA</h1><small id="em-time">—</small></div>
+  </div>
+  <div class="content">
+    <div class="timer-box">
+      <div class="timer-label">Tiempo desde activación</div>
+      <div class="timer-value" id="timer-display">00:00:00</div>
+      <div class="timer-date" id="timer-date">—</div>
+    </div>
+    <div class="alert-box"><i class="ti ti-alert-circle"></i><span>Avisa <strong>inmediatamente</strong> al Jefe de Emergencias. Sigue sus instrucciones.</span></div>
+    <div class="card"><label>Tipo de emergencia</label><p id="em-tipo">—</p></div>
+    <div class="card"><label>Tu ubicación</label><p id="em-loc">—</p></div>
+    <div class="route-box"><h3><i class="ti ti-route"></i>Salida más cercana</h3><p id="em-route">—</p></div>
+    <canvas id="minimap"></canvas>
+    <button class="map-btn" onclick="abrirMaps()"><i class="ti ti-map-2"></i>Abrir ruta en Google Maps</button>
+    <p class="section-lbl">Llama ahora</p>
+    <div class="contacts-wrap">
+      <div class="crow"><div class="cinfo"><h4>Marina — Jefa Emergencias</h4><p>685 61 79 06</p></div><button class="call-btn cbtn-green" onclick="call('685617906')">Llamar</button></div>
+      <div class="crow"><div class="cinfo"><h4>Jorge — Jefe Emergencias</h4><p>673 36 28 17</p></div><button class="call-btn cbtn-green" onclick="call('673362817')">Llamar</button></div>
+      <div class="crow" id="em-enf-row" style="display:none"><div class="cinfo"><h4>Enfermería</h4><p>624 00 24 20</p></div><button class="call-btn cbtn-green" onclick="call('624002420')">Llamar</button></div>
+    </div>
+    <button class="btn-outline" style="border-color:var(--red);color:var(--red)" onclick="pedir112()"><i class="ti ti-ambulance" style="color:var(--red)"></i>Llamar 112 — solo si es estrictamente necesario</button>
+  </div>
+</div>
+
+<!-- TELÉFONOS -->
+<div id="s-contacts" class="screen">
+  <div class="hdr hdr-red">
+    <button class="back-btn" onclick="go('s-home')"><i class="ti ti-arrow-left"></i></button>
+    <div><h1>Teléfonos de emergencia</h1><small>ISFV Ayora 1</small></div>
+  </div>
+  <div class="content">
+    <p class="section-lbl" style="margin-bottom:10px">Jefes de emergencias</p>
+    <div class="contacts-wrap">
+      <div class="crow"><div class="cinfo"><h4>Marina — Jefa de Emergencias</h4><p>685 61 79 06</p></div><button class="call-btn cbtn-green" onclick="call('685617906')">Llamar</button></div>
+      <div class="crow"><div class="cinfo"><h4>Jorge — Jefe de Emergencias</h4><p>673 36 28 17</p></div><button class="call-btn cbtn-green" onclick="call('673362817')">Llamar</button></div>
+    </div>
+    <p class="section-lbl" style="margin-bottom:10px">Equipos de actuación</p>
+    <div class="contacts-wrap">
+      <div class="crow"><div class="cinfo"><h4>Javier Espejo — Alarma / Evacuación</h4><p>603 81 63 06</p></div><button class="call-btn cbtn-green" onclick="call('603816306')">Llamar</button></div>
+      <div class="crow"><div class="cinfo"><h4>Javier Bartolomé — Alarma / Evacuación</h4><p>675 28 58 56</p></div><button class="call-btn cbtn-green" onclick="call('675285856')">Llamar</button></div>
+      <div class="crow"><div class="cinfo"><h4>Rubén — Primera Intervención</h4><p>682 03 88 82</p></div><button class="call-btn cbtn-green" onclick="call('682038882')">Llamar</button></div>
+      <div class="crow"><div class="cinfo"><h4>José Manuel — Primera Intervención</h4><p>658 90 70 41</p></div><button class="call-btn cbtn-green" onclick="call('658907041')">Llamar</button></div>
+      <div class="crow"><div class="cinfo"><h4>Enfermería — Primeros Auxilios</h4><p>624 00 24 20</p></div><button class="call-btn cbtn-green" onclick="call('624002420')">Llamar</button></div>
+    </div>
+    <p class="section-lbl" style="margin-bottom:10px">Ayuda externa</p>
+    <div class="contacts-wrap">
+      <div class="crow"><div class="cinfo"><h4>Emergencias generales</h4><p>112</p></div><button class="call-btn cbtn-red" onclick="pedir112()">Llamar</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- PROTOCOLO -->
+<div id="s-protocol" class="screen">
+  <div class="hdr hdr-red">
+    <button class="back-btn" onclick="go('s-home')"><i class="ti ti-arrow-left"></i></button>
+    <div><h1>Protocolo de actuación</h1><small>Respuesta rápida y eficaz</small></div>
+  </div>
+  <div class="content">
+    <ul style="list-style:none">
+      <li class="step-li"><div class="snum">1</div><div class="stext"><strong>Detectas la emergencia</strong><br>Avisa inmediatamente al Jefe de Emergencias. No actúes solo.</div></li>
+      <li class="step-li"><div class="snum">2</div><div class="stext"><strong>Jefe de Emergencias evalúa</strong><br>Marina (685 61 79 06) o Jorge (673 36 28 17) reciben, evalúan y activan la cadena.</div></li>
+      <li class="step-li"><div class="snum">3</div><div class="stext"><strong>El Jefe activa los equipos</strong><br>🔔 Alarma y Evacuación · 🔥 Primera Intervención · 🏥 Primeros Auxilios</div></li>
+      <li class="step-li"><div class="snum">4</div><div class="stext"><strong>Primeros Auxilios → 112</strong><br>Solo si es necesario. Mantienen su línea libre en todo momento para el 112.</div></li>
+      <li class="step-li"><div class="snum">5</div><div class="stext"><strong>Evacuar a puntos de encuentro</strong><br>🟢 Salida N-330 (norte) · 🟢 Garita (sur)</div></li>
+    </ul>
+    <div class="warn-box" style="margin-top:14px"><strong>Reglas clave:</strong> Llama solo a quien sea necesario · Mantén líneas libres para el 112 · Da información clara y concisa · Sigue siempre las instrucciones del Jefe de Emergencias.</div>
+  </div>
+</div>
+
+<!-- MAPA -->
+<div id="s-map" class="screen">
+  <div class="hdr hdr-green">
+    <button class="back-btn" onclick="go('s-home')"><i class="ti ti-arrow-left"></i></button>
+    <div><h1>Mapa de la planta</h1><small>ISFV Ayora 1 — Puntos clave</small></div>
+  </div>
+  <div class="content">
+    <canvas id="fullmap" style="width:100%;height:320px;border-radius:var(--radius-sm);border:1px solid var(--border);display:block;background:#ddeeff;margin-bottom:12px"></canvas>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+      <div class="card" style="margin-bottom:0"><label>🟢 Salida N-330</label><p style="font-size:12px">38°59'42.3" N<br>1°04'15.0" W</p></div>
+      <div class="card" style="margin-bottom:0"><label>🟢 Garita</label><p style="font-size:12px">38°58'49.2" N<br>1°05'12.6" W</p></div>
+    </div>
+    <div class="card"><label>🏥 Enfermería</label><p style="font-size:12px">38°58'54.6" N · 1°05'13.3" W</p></div>
+    <button class="map-btn" onclick="abrirMapsGeneral()"><i class="ti ti-map-2"></i>Ver en Google Maps</button>
+  </div>
+</div>
+
+<!-- HISTORIAL -->
+<div id="s-historial" class="screen">
+  <div class="hdr hdr-orange">
+    <button class="back-btn" onclick="go('s-home')"><i class="ti ti-arrow-left"></i></button>
+    <div style="flex:1"><h1>Historial</h1><small>Registro de emergencias activadas</small></div>
+    <button onclick="borrarHistorial()" style="background:transparent;border:none;color:rgba(255,255,255,0.8);font-size:11px;cursor:pointer;white-space:nowrap">Borrar todo</button>
+  </div>
+  <div class="content" id="historial-content"></div>
+</div>
+
+<!-- QR -->
+<div id="s-qr" class="screen">
+  <div class="hdr hdr-blue">
+    <button class="back-btn" onclick="go('s-home')"><i class="ti ti-arrow-left"></i></button>
+    <div><h1>QR de la app</h1><small>Comparte para instalar</small></div>
+  </div>
+  <div class="content">
+    <div style="display:flex;flex-direction:column;align-items:center;padding:8px 0">
+      <canvas id="qr-canvas" width="220" height="220" style="border-radius:var(--radius-sm);border:1px solid var(--border)"></canvas>
+      <p style="font-size:13px;color:var(--text2);text-align:center;margin-top:16px;line-height:1.6">Escanea con la cámara del móvil para abrir e instalar la app.</p>
+      <div class="card" style="width:100%;margin-top:12px">
+        <label>Enlace directo</label>
+        <p style="font-size:12px;color:var(--blue);word-break:break-all">https://ayora2026.github.io/isfv-ayora1-emergencias/</p>
+      </div>
+      <button class="share-btn" onclick="shareApp('system')" style="background:var(--blue);width:100%;margin-top:4px"><i class="ti ti-share" style="font-size:18px"></i>Compartir enlace</button>
+    </div>
+  </div>
+</div>
+
+</div>
+<script>
+const ENFERMERIA={lat:38.98183,lng:-1.08703};
+const GARITA={lat:38.98033,lng:-1.08683};
+const N330={lat:38.99508,lng:-1.07083};
+const APP_URL='https://ayora2026.github.io/isfv-ayora1-emergencias/';
+
+const PARCELAS=[
+  {id:'P001',lat:38.9945,lng:-1.0740},{id:'P002',lat:38.9938,lng:-1.0760},
+  {id:'P003',lat:38.9932,lng:-1.0760},{id:'P004',lat:38.9935,lng:-1.0740},
+  {id:'P005',lat:38.9920,lng:-1.0738},{id:'P006',lat:38.9905,lng:-1.0750},
+  {id:'P007',lat:38.9950,lng:-1.0790},{id:'P008',lat:38.9918,lng:-1.0795},
+  {id:'P009',lat:38.9920,lng:-1.0870},{id:'P010',lat:38.9915,lng:-1.0855},
+  {id:'P011',lat:38.9925,lng:-1.0845},{id:'P012',lat:38.9910,lng:-1.0840},
+  {id:'P013',lat:38.9900,lng:-1.0835},{id:'P014',lat:38.9908,lng:-1.0820},
+  {id:'P015',lat:38.9908,lng:-1.0875},{id:'P016',lat:38.9903,lng:-1.0862},
+  {id:'P017',lat:38.9898,lng:-1.0848},{id:'P018',lat:38.9900,lng:-1.0878},
+  {id:'P019',lat:38.9890,lng:-1.0850},{id:'P020',lat:38.9895,lng:-1.0882},
+  {id:'P021',lat:38.9885,lng:-1.0885},{id:'P022',lat:38.9883,lng:-1.0865},
+  {id:'P023',lat:38.9878,lng:-1.0860},{id:'P024',lat:38.9880,lng:-1.0843},
+  {id:'P025',lat:38.9880,lng:-1.0830},{id:'P026',lat:38.9880,lng:-1.0815},
+  {id:'P027',lat:38.9868,lng:-1.0843},{id:'P028',lat:38.9865,lng:-1.0830},
+  {id:'P029',lat:38.9858,lng:-1.0833},
+];
+const ZONA_RUTAS={
+  'norte':{salida:'N-330',exit:N330,txt:'Dirígete al NORTE y ESTE por el camino principal.'},
+  'centro-norte':{salida:'N-330',exit:N330,txt:'Dirígete al ESTE por el camino central. Salida N-330 al norte.'},
+  'centro-sur':{salida:'Garita',exit:GARITA,txt:'Dirígete al SUR por el camino central. La Garita es tu salida más cercana.'},
+  'sur':{salida:'Garita',exit:GARITA,txt:'Dirígete directamente al SUR. La Garita está muy próxima.'},
+};
+const REF_RUTAS={
+  'enfermeria':{salida:'Garita',exit:GARITA,txt:'Desde Enfermería dirígete al SUR unos 170m hasta la Garita.'},
+  'garita':{salida:'Garita',exit:GARITA,txt:'Ya estás en la Garita. Quédate y espera instrucciones.'},
+  'n330':{salida:'N-330',exit:N330,txt:'Ya estás en Salida N-330. Quédate y espera instrucciones.'},
+  'centro':{salida:'Garita',exit:GARITA,txt:'Dirígete al SUR hacia la Garita o al NORTE a N-330 según indique el Jefe.'},
+  'camino-norte':{salida:'N-330',exit:N330,txt:'Dirígete al ESTE hasta la Salida N-330.'},
+  'camino-sur':{salida:'Garita',exit:GARITA,txt:'Dirígete al SUR hasta la Garita.'},
+};
+const TIPOS={
+  incendio: {icon:'🔥',name:'Incendio',enf:false},
+  medica:   {icon:'🏥',name:'Emergencia médica',enf:true},
+  tormenta: {icon:'⛈️',name:'Tormenta / Rayo',enf:false},
+  fuga:     {icon:'☢️',name:'Fuga / Derrame',enf:false},
+  otro:     {icon:'🆘',name:'Otra emergencia',enf:false},
+};
+
+let gpsPos=null,activeLoc=null,tipoSeleccionado=null;
+let timerInterval=null,timerStart=null;
+
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='s-map') setTimeout(drawFullMap,50);
+  if(id==='s-historial') renderHistorial();
+  if(id==='s-qr') setTimeout(drawQR,50);
+}
+function call(n){window.location.href='tel:'+n;}
+function callAndClose(n){cerrarAlerta();call(n);}
+
+function avisarEnfermeria(tipo){
+  const num='34624002420';
+  const loc=activeLoc?activeLoc.label:'ubicación desconocida';
+  const coords=gpsPos?`\nCoordenadas GPS: ${gpsPos.lat.toFixed(5)}, ${gpsPos.lng.toFixed(5)}\nhttps://maps.google.com/?q=${gpsPos.lat},${gpsPos.lng}`:'';
+  let msg='';
+  if(tipo==='enfermeria'){
+    msg=`🏥 EMERGENCIA MÉDICA — ISFV Ayora 1\n\nEl accidentado SE DESPLAZA a Enfermería.\n📍 Ubicación actual: ${loc}${coords}\n\nPrepara la enfermería para recibir al accidentado.`;
+  } else {
+    msg=`🚨 EMERGENCIA MÉDICA — ISFV Ayora 1\n\nNecesitas DESPLAZARTE a obra.\n📍 Ubicación del accidentado: ${loc}${coords}\n\nDirígete a esta ubicación inmediatamente.`;
+  }
+  window.open('https://wa.me/'+num+'?text='+encodeURIComponent(msg),'_blank');
+}
+function switchTab(id){
+  document.querySelectorAll('.tab-pane').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const idx={'t-parcela':0,'t-zona':1,'t-ref':2}[id];
+  document.querySelectorAll('.tab')[idx].classList.add('active');
+}
+function dist(a,b){
+  const R=6371000,dLat=(b.lat-a.lat)*Math.PI/180,dLng=(b.lng-a.lng)*Math.PI/180;
+  const x=Math.sin(dLat/2)**2+Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(dLng/2)**2;
+  return Math.round(R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x)));
+}
+function nearestExit(pos){
+  const dG=dist(pos,GARITA),dN=dist(pos,N330);
+  return dG<=dN
+    ?{salida:'Garita',distM:dG,exit:GARITA,txt:'Dirígete al SUR hacia la Garita (~'+dG+'m).'}
+    :{salida:'N-330',distM:dN,exit:N330,txt:'Dirígete al NORTE-ESTE hacia Salida N-330 (~'+dN+'m).'};
+}
+
+// TIPO
+function selTipo(tipo){
+  tipoSeleccionado=tipo;
+  document.querySelectorAll('.tipo-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('t-'+tipo).classList.add('selected');
+  const btn=document.getElementById('btn-activar-tipo');
+  btn.style.opacity='1';btn.style.pointerEvents='auto';
+  const aviso=document.getElementById('tipo-aviso');
+  const t=TIPOS[tipo];
+  if(t.enf){
+    aviso.style.display='block';
+    aviso.innerHTML='🏥 <strong>Este tipo incluye alerta a Enfermería</strong> — aparecerá el botón para llamarla directamente.';
+  } else {
+    aviso.style.display='none';
+  }
+}
+
+// SONIDO
+function playAlarmSound(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const beep=(f,s,d)=>{
+      const o=ctx.createOscillator(),g=ctx.createGain();
+      o.connect(g);g.connect(ctx.destination);
+      o.frequency.value=f;o.type='square';
+      g.gain.setValueAtTime(0.4,ctx.currentTime+s);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+s+d);
+      o.start(ctx.currentTime+s);o.stop(ctx.currentTime+s+d);
+    };
+    for(let i=0;i<6;i++){beep(880,i*0.4,0.3);beep(660,i*0.4+0.2,0.15);}
+  }catch(e){}
+}
+function vibrar(){if(navigator.vibrate)navigator.vibrate([300,100,300,100,300,100,500,200,300,100,300]);}
+
+// ALERTA OVERLAY
+function mostrarAlerta(){
+  const tipo=TIPOS[tipoSeleccionado];
+  document.getElementById('ao-tipo').textContent=tipo.icon+' '+tipo.name;
+  document.getElementById('ao-loc').textContent='📍 '+activeLoc.label+'\n→ '+activeLoc.txt;
+  // mostrar enfermería solo si aplica
+  document.getElementById('ao-enf-wrap').style.display=tipo.enf?'block':'none';
+  // mostrar enfermería en pantalla emergencia también
+  document.getElementById('em-enf-row').style.display=tipo.enf?'flex':'none';
+  document.getElementById('alerta-overlay').classList.add('active');
+  playAlarmSound();vibrar();
+  setTimeout(vibrar,2000);setTimeout(vibrar,4000);
+}
+function cerrarAlerta(){
+  document.getElementById('alerta-overlay').classList.remove('active');
+  go('s-emergency');
+}
+
+// CRONÓMETRO
+function startTimer(){
+  if(timerInterval)clearInterval(timerInterval);
+  timerStart=Date.now();
+  timerInterval=setInterval(()=>{
+    const e=Math.floor((Date.now()-timerStart)/1000);
+    const h=Math.floor(e/3600),m=Math.floor((e%3600)/60),s=e%60;
+    document.getElementById('timer-display').textContent=
+      String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  },1000);
+}
+
+// HISTORIAL
+function guardarEnHistorial(){
+  const tipo=TIPOS[tipoSeleccionado];
+  const r={id:Date.now(),tipo:tipoSeleccionado,tipoNombre:tipo.name,tipoIcon:tipo.icon,
+    ubicacion:activeLoc.label,salida:activeLoc.salida,fecha:new Date().toLocaleString('es-ES')};
+  const h=JSON.parse(localStorage.getItem('historial')||'[]');
+  h.unshift(r);if(h.length>50)h.pop();
+  localStorage.setItem('historial',JSON.stringify(h));
+}
+function renderHistorial(){
+  const h=JSON.parse(localStorage.getItem('historial')||'[]');
+  const c=document.getElementById('historial-content');
+  if(!h.length){c.innerHTML='<div class="hist-empty">📋<br><br>No hay emergencias registradas.<br>Las activaciones aparecerán aquí.</div>';return;}
+  c.innerHTML=h.map(r=>`<div class="hist-item ${r.tipo}"><h4>${r.tipoIcon} ${r.tipoNombre}</h4><p>📍 ${r.ubicacion} → ${r.salida}<br>🕐 ${r.fecha}</p></div>`).join('');
+}
+function borrarHistorial(){if(confirm('¿Borrar todo el historial?')){localStorage.removeItem('historial');renderHistorial();}}
+
+// LANZAR EMERGENCIA
+function activarConTipo(){
+  if(!tipoSeleccionado)return;
+  if(gpsPos){const ex=nearestExit(gpsPos);activeLoc={label:'GPS activo',salida:ex.salida,txt:ex.txt,lat:gpsPos.lat,lng:gpsPos.lng,exit:ex.exit};}
+  else{activeLoc={label:'Sin GPS',salida:'más cercana',txt:'Sigue las señales de evacuación.',exit:GARITA};}
+  launchEmergency();
+}
+function launchEmergency(){
+  const tipo=TIPOS[tipoSeleccionado];
+  document.getElementById('em-tipo').textContent=tipo.icon+' '+tipo.name;
+  document.getElementById('em-loc').textContent=activeLoc.label;
+  document.getElementById('em-route').textContent='→ '+activeLoc.txt;
+  document.getElementById('em-time').textContent='Activada: '+new Date().toLocaleTimeString('es-ES');
+  document.getElementById('timer-date').textContent=new Date().toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'});
+  guardarEnHistorial();startTimer();setTimeout(drawMinimap,50);
+  mostrarAlerta();
+}
+
+// 112
+function pedir112(){document.getElementById('confirm112').classList.add('active');}
+function confirmar112(){document.getElementById('confirm112').classList.remove('active');call('112');}
+function cancelar112(){document.getElementById('confirm112').classList.remove('active');}
+
+// SELECCIÓN MANUAL
+function onParcelaChange(){
+  const p=PARCELAS.find(x=>x.id===document.getElementById('sel-parcela').value);if(!p)return;
+  const ex=nearestExit(p);activeLoc={label:p.id+' (manual)',salida:ex.salida,txt:ex.txt,lat:p.lat,lng:p.lng,exit:ex.exit};
+  document.getElementById('rt-parcela').textContent='→ '+ex.txt;document.getElementById('r-parcela').style.display='block';
+}
+function onZonaChange(){
+  const z=document.getElementById('sel-zona').value;if(!z)return;
+  const r=ZONA_RUTAS[z];activeLoc={label:'Zona '+z+' (manual)',salida:r.salida,txt:r.txt,exit:r.exit};
+  document.getElementById('rt-zona').textContent='→ '+r.txt;document.getElementById('r-zona').style.display='block';
+}
+function onRefChange(){
+  const r=document.getElementById('sel-ref').value;if(!r)return;
+  const i=REF_RUTAS[r];activeLoc={label:'Ref: '+r+' (manual)',salida:i.salida,txt:i.txt,exit:i.exit};
+  document.getElementById('rt-ref').textContent='→ '+i.txt;document.getElementById('r-ref').style.display='block';
+}
+
+// MAPS
+function abrirMaps(){
+  if(!activeLoc)return;
+  const d=activeLoc.exit||GARITA;
+  window.open(gpsPos?`https://www.google.com/maps/dir/${gpsPos.lat},${gpsPos.lng}/${d.lat},${d.lng}`:`https://www.google.com/maps/search/?api=1&query=${d.lat},${d.lng}`,'_blank');
+}
+function abrirMapsGeneral(){window.open(`https://www.google.com/maps/search/?api=1&query=${GARITA.lat},${GARITA.lng}`,'_blank');}
+
+// COMPARTIR
+function shareApp(via){
+  const msg='📱 App Emergencias ISFV Ayora 1 — Plan de Evacuación. Instálala: '+APP_URL;
+  if(via==='whatsapp')window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+  else if(via==='telegram')window.open('https://t.me/share/url?url='+encodeURIComponent(APP_URL)+'&text='+encodeURIComponent('📱 App Emergencias ISFV Ayora 1'),'_blank');
+  else if(via==='teams')window.open('https://teams.microsoft.com/share?href='+encodeURIComponent(APP_URL),'_blank');
+  else if(via==='email')window.location.href='mailto:?subject='+encodeURIComponent('App Emergencias ISFV Ayora 1')+'&body='+encodeURIComponent('Instala la app:\n\n'+APP_URL+'\n\nAbre en Chrome (Android) o Safari (iPhone) y añade a pantalla de inicio.');
+  else if(via==='system'){
+    if(navigator.share)navigator.share({title:'App Emergencias ISFV Ayora 1',text:'📱 Plan de Emergencia ISFV Ayora 1',url:APP_URL});
+    else navigator.clipboard.writeText(APP_URL).then(()=>alert('✅ Enlace copiado:\n'+APP_URL));
+  }
+}
+
+// MAPA CANVAS
+const MB={minLat:38.984,maxLat:38.997,minLng:-1.092,maxLng:-1.068};
+function proj(lat,lng,W,H){return{x:((lng-MB.minLng)/(MB.maxLng-MB.minLng))*W,y:H-((lat-MB.minLat)/(MB.maxLat-MB.minLat))*H};}
+function drawBase(ctx,W,H){
+  ctx.fillStyle='#e8f0fe';ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(0,0,0,0.10)';ctx.lineWidth=4;ctx.setLineDash([]);
+  [[{lat:38.996,lng:-1.091},{lat:38.996,lng:-1.068}],[{lat:38.984,lng:-1.091},{lat:38.984,lng:-1.068}],[{lat:38.984,lng:-1.080},{lat:38.997,lng:-1.080}],[{lat:38.990,lng:-1.091},{lat:38.990,lng:-1.068}]].forEach(s=>{
+    const a=proj(s[0].lat,s[0].lng,W,H),b=proj(s[1].lat,s[1].lng,W,H);
+    ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+  });
+  PARCELAS.forEach(p=>{
+    const pt=proj(p.lat,p.lng,W,H);
+    ctx.fillStyle='rgba(52,152,219,0.20)';ctx.strokeStyle='rgba(52,152,219,0.45)';ctx.lineWidth=0.5;
+    ctx.fillRect(pt.x-8,pt.y-6,16,12);ctx.strokeRect(pt.x-8,pt.y-6,16,12);
+    ctx.fillStyle='rgba(0,0,0,0.45)';ctx.font='6px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(p.id.replace('P',''),pt.x,pt.y);
+  });
+}
+function drawPin(ctx,W,H,coord,color,label){
+  const pt=proj(coord.lat,coord.lng,W,H);
+  ctx.fillStyle=color;ctx.beginPath();ctx.arc(pt.x,pt.y,8,0,2*Math.PI);ctx.fill();
+  ctx.fillStyle='#fff';ctx.font='bold 8px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(label[0],pt.x,pt.y);
+  ctx.fillStyle='rgba(0,0,0,0.65)';ctx.font='9px sans-serif';ctx.textAlign='left';ctx.fillText(label,pt.x+11,pt.y);
+}
+function drawMinimap(){
+  const c=document.getElementById('minimap');if(!c)return;
+  const W=c.offsetWidth||340,H=200;c.width=W;c.height=H;const ctx=c.getContext('2d');
+  drawBase(ctx,W,H);drawPin(ctx,W,H,ENFERMERIA,'#c0392b','Enf.');drawPin(ctx,W,H,GARITA,'#27ae60','Garita');drawPin(ctx,W,H,N330,'#27ae60','N-330');
+  if(activeLoc&&activeLoc.lat){
+    const uPt=proj(activeLoc.lat,activeLoc.lng,W,H),ePt=proj(activeLoc.exit.lat,activeLoc.exit.lng,W,H);
+    ctx.strokeStyle='#e74c3c';ctx.lineWidth=2.5;ctx.setLineDash([5,4]);
+    ctx.beginPath();ctx.moveTo(uPt.x,uPt.y);ctx.lineTo(ePt.x,ePt.y);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='rgba(231,76,60,0.18)';ctx.beginPath();ctx.arc(uPt.x,uPt.y,18,0,2*Math.PI);ctx.fill();
+    ctx.fillStyle='#e74c3c';ctx.beginPath();ctx.arc(uPt.x,uPt.y,9,0,2*Math.PI);ctx.fill();
+    ctx.fillStyle='#fff';ctx.font='bold 8px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('TÚ',uPt.x,uPt.y);
+  }
+  ctx.fillStyle='rgba(255,255,255,0.88)';ctx.fillRect(0,H-26,W,26);
+  [[14,'#e74c3c','Tu posición'],[100,'#27ae60','Punto encuentro'],[210,'#c0392b','Enfermería']].forEach(([x,c2,l])=>{
+    ctx.fillStyle=c2;ctx.beginPath();ctx.arc(x,H-13,5,0,2*Math.PI);ctx.fill();
+    ctx.fillStyle='rgba(0,0,0,0.6)';ctx.font='9px sans-serif';ctx.textAlign='left';ctx.fillText(l,x+9,H-10);
+  });
+}
+function drawFullMap(){
+  const c=document.getElementById('fullmap');if(!c)return;
+  const W=c.offsetWidth||340,H=320;c.width=W;c.height=H;const ctx=c.getContext('2d');
+  drawBase(ctx,W,H);drawPin(ctx,W,H,ENFERMERIA,'#c0392b','Enfermería');drawPin(ctx,W,H,GARITA,'#27ae60','Garita');drawPin(ctx,W,H,N330,'#27ae60','N-330');
+  if(gpsPos){const pt=proj(gpsPos.lat,gpsPos.lng,W,H);ctx.fillStyle='#e74c3c';ctx.beginPath();ctx.arc(pt.x,pt.y,9,0,2*Math.PI);ctx.fill();ctx.fillStyle='#fff';ctx.font='bold 8px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('TÚ',pt.x,pt.y);}
+}
+function drawQR(){
+  const canvas=document.getElementById('qr-canvas');
+  const ctx=canvas.getContext('2d');
+  const img=new Image();img.crossOrigin='anonymous';
+  img.onload=()=>ctx.drawImage(img,0,0,220,220);
+  img.onerror=()=>{ctx.fillStyle='#f0f2f5';ctx.fillRect(0,0,220,220);ctx.fillStyle='#5a6272';ctx.font='12px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('Necesita conexión',110,110);};
+  img.src='https://api.qrserver.com/v1/create-qr-code/?size=220x220&data='+encodeURIComponent(APP_URL);
+}
+
+// GPS
+function initGPS(){
+  if(!navigator.geolocation){
+    document.getElementById('gps-txt').textContent='GPS no disponible — usa selección manual';
+    document.getElementById('dot0').className='dot dot-red';
+    document.getElementById('home-loc').textContent='Sin GPS';return;
+  }
+  navigator.geolocation.watchPosition(pos=>{
+    gpsPos={lat:pos.coords.latitude,lng:pos.coords.longitude};
+    document.getElementById('gps-txt').textContent='GPS activo — precisión ±'+Math.round(pos.coords.accuracy)+'m';
+    document.getElementById('dot0').className='dot dot-green';
+    const ex=nearestExit(gpsPos);
+    document.getElementById('home-loc').textContent='Salida más cercana: '+ex.salida+' (~'+ex.distM+'m)';
+    document.getElementById('home-dist').textContent='Garita: '+dist(gpsPos,GARITA)+'m · N-330: '+dist(gpsPos,N330)+'m';
+    document.getElementById('dist-card').style.display='block';
+  },()=>{
+    document.getElementById('gps-txt').textContent='GPS no disponible — usa selección manual';
+    document.getElementById('dot0').className='dot dot-orange';
+    document.getElementById('home-loc').textContent='Sin GPS — selecciona tu ubicación';
+  },{enableHighAccuracy:true,maximumAge:5000,timeout:12000});
+}
+function initSelect(){
+  const sel=document.getElementById('sel-parcela');
+  PARCELAS.forEach(p=>{const ex=nearestExit(p),o=document.createElement('option');o.value=p.id;o.textContent=p.id+' → '+ex.salida+' (~'+ex.distM+'m)';sel.appendChild(o);});
+}
+if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+
+// INSTALAR APP
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();
+  deferredPrompt=e;
+  const box=document.getElementById('install-box');
+  if(box) box.style.display='flex';
+});
+window.addEventListener('appinstalled',()=>{
+  const box=document.getElementById('install-box');
+  if(box) box.style.display='none';
+});
+function instalarApp(){
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(()=>{
+    deferredPrompt=null;
+    const box=document.getElementById('install-box');
+    if(box) box.style.display='none';
+  });
+}
+initGPS();initSelect();
+</script>
+</body>
+</html>
