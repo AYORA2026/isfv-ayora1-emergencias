@@ -161,15 +161,15 @@ canvas#minimap{width:100%;height:200px;border-radius:var(--radius-sm);border:1px
 
 <!-- INICIO -->
 <div id="s-home" class="screen active">
-  <div class="hdr hdr-red" style="flex-direction:column;align-items:center;padding:14px 14px 12px;gap:4px">
-    <img src="icon-192.png" style="width:84px;height:84px;border-radius:14px;box-shadow:0 3px 10px rgba(0,0,0,0.25)" alt="logo ISFV Ayora 1">
-    <h1 style="font-size:24px;font-weight:800;letter-spacing:0.3px;margin-top:2px">ISFV Ayora 1</h1>
-    <small style="font-size:15px;font-weight:500">Plan de Emergencia y Evacuación</small>
+  <div class="hdr hdr-red" style="flex-direction:column;align-items:center;padding:16px 14px 14px;gap:6px">
+    <img src="icon-192.png" style="width:130px;height:130px;border-radius:18px;box-shadow:0 3px 10px rgba(0,0,0,0.25)" alt="logo ISFV Ayora 1">
+    <h1 style="font-size:34px;font-weight:800;letter-spacing:0.3px;margin-top:4px;text-align:center;line-height:1.1">ISFV Ayora 1</h1>
+    <small style="font-size:22px;font-weight:600;text-align:center;line-height:1.2">Plan de Emergencia y Evacuación</small>
     <div class="dot dot-orange" id="dot0" style="position:absolute;top:14px;right:14px"></div>
   </div>
-  <div id="install-box" style="display:none;background:var(--blue);padding:10px 16px;align-items:center;justify-content:space-between;gap:10px">
-    <span style="font-size:11px;color:#fff;flex:1">📲 Instala la app sin conexión</span>
-    <button id="install-btn" onclick="instalarApp()" style="background:#fff;color:var(--blue);border:none;border-radius:var(--radius-sm);padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">Instalar</button>
+  <div id="install-box" style="display:none;background:var(--blue);padding:12px 16px;align-items:center;justify-content:space-between;gap:10px">
+    <span style="font-size:16px;font-weight:700;color:#fff;flex:1">📲 Instala la app sin conexión</span>
+    <button id="install-btn" onclick="instalarApp()" style="background:#fff;color:var(--blue);border:none;border-radius:var(--radius-sm);padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">Instalar</button>
   </div>
   <div class="content">
     <div class="gps-row"><span id="gps-txt">Buscando GPS...</span></div>
@@ -183,11 +183,14 @@ canvas#minimap{width:100%;height:200px;border-radius:var(--radius-sm);border:1px
       <p id="home-dist">—</p>
     </div>
 
-    <button class="btn-outline" style="justify-content:flex-start" onclick="go('s-map')"><i class="ti ti-map"></i>Ver mapa de la planta</button>
+    <button class="btn-outline" style="justify-content:center;padding:18px 8px" onclick="go('s-map')">
+      <span style="font-size:22px;font-weight:800;color:var(--text)">VER MAPA DE LA PLANTA</span>
+    </button>
 
     <button class="btn-big btn-red" onclick="go('s-tipo')"><i class="ti ti-alert-triangle"></i>ACTIVAR EMERGENCIA</button>
-    <button class="btn-outline" onclick="go('s-manual')"><i class="ti ti-map-pin"></i>Indicar mi ubicación manualmente</button>
-    <button class="btn-outline" onclick="go('s-contacts')"><i class="ti ti-phone"></i>Teléfonos de emergencia</button>
+    <button class="btn-outline" style="justify-content:center;padding:18px 8px" onclick="go('s-contacts')">
+      <span style="font-size:22px;font-weight:800;color:var(--text);text-align:center;line-height:1.2">TELÉFONOS DE EMERGENCIA Y PROTOCOLO DE ACTUACIÓN</span>
+    </button>
 
     <div class="warn-box"><strong>Regla de oro:</strong> Solo llama a quien sea estrictamente necesario. Mantén las líneas libres para el 112. Sigue las instrucciones del Jefe de Emergencias.</div>
 
@@ -199,7 +202,6 @@ canvas#minimap{width:100%;height:200px;border-radius:var(--radius-sm);border:1px
         <button class="share-btn" onclick="shareApp('teams')" style="background:#6264A7"><i class="ti ti-brand-teams" style="font-size:18px"></i>Teams</button>
         <button class="share-btn" onclick="shareApp('email')" style="background:#EA4335"><i class="ti ti-mail" style="font-size:18px"></i>Email</button>
       </div>
-      <button class="share-btn" onclick="shareApp('system')" style="background:var(--blue);width:100%;margin-top:8px"><i class="ti ti-share" style="font-size:18px"></i>Compartir por otras apps...</button>
     </div>
   </div>
 </div>
@@ -371,15 +373,7 @@ canvas#minimap{width:100%;height:200px;border-radius:var(--radius-sm);border:1px
   <div class="content">
     <canvas id="fullmap" class="map-canvas" style="height:400px"></canvas>
     <button class="map-btn" onclick="abrirMapsGeneral()"><i class="ti ti-map-2"></i>Ver en Google Maps / Earth</button>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
-      <div class="card" style="margin-bottom:0"><label>🟢 Salida N-330</label><p style="font-size:11px">38°59'42.3" N<br>1°04'15.0" W</p></div>
-      <div class="card" style="margin-bottom:0"><label>🟢 Garita</label><p style="font-size:11px">38°58'49.2" N<br>1°05'12.6" W</p></div>
-    </div>
-    <div class="card"><label>🏥 Enfermería (P028)</label><p style="font-size:11px">38°58'54.6" N · 1°05'13.3" W</p></div>
-    <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:10px;font-size:11px;color:var(--text2);line-height:1.6">
-      <strong style="color:var(--text)">Leyenda:</strong><br>
-      🔵 Parcelas P001–P029 · 🟤 Caminos · 🔴 Tu posición · 🟢 Puntos de encuentro · 🔴 Enfermería
-    </div>
+    <div class="card"><label>📍 Tu ubicación</label><p id="map-mi-ubicacion">—</p></div>
   </div>
 </div>
 
@@ -660,14 +654,12 @@ function drawFullMap(){
     ctx.fillStyle='#e74c3c';ctx.beginPath();ctx.arc(pt.x,pt.y,9,0,2*Math.PI);ctx.fill();
     ctx.fillStyle='#fff';ctx.font='bold 8px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.fillText('TÚ',pt.x,pt.y);
+    const np=nearestParcela(gpsPos);
+    const ex=nearestExit(gpsPos);
+    setText('map-mi-ubicacion',np.parcela.id+' (~'+np.distM+'m) · Salida más cercana: '+ex.salida+' (~'+ex.distM+'m)');
+  } else {
+    setText('map-mi-ubicacion','GPS no disponible');
   }
-  // leyenda
-  ctx.fillStyle='rgba(255,255,255,0.9)';ctx.fillRect(0,H-28,W,28);
-  [[12,'#3498db','Parcelas'],[75,'#27ae60','Zonas/Islas'],[145,'#27ae60','P.Encuentro'],[230,'#c0392b','Enfermería']].forEach(([x,c2,l])=>{
-    ctx.fillStyle=c2;ctx.beginPath();ctx.arc(x,H-14,5,0,2*Math.PI);ctx.fill();
-    ctx.fillStyle='rgba(0,0,0,0.6)';ctx.font='9px sans-serif';ctx.textAlign='left';
-    ctx.fillText(l,x+8,H-11);
-  });
 }
 
 function drawParcelaMap(parcelaId){
